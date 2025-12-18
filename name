@@ -1,0 +1,187 @@
+public class TaxCalculator {
+
+    public void calculateTax() {
+        Scanner sc = new Scanner(System.in);
+        double income = sc.nextDouble();
+
+        double tax = 0;
+
+        if (income > 20000)
+            tax = income * 0.10;
+        else if (income > 15000)
+            tax = income * 0.05;
+        else if (income > 10000)
+            tax = income * 0.03;
+
+        System.out.println("Tax = " + tax);
+    }
+}
+
+
+
+(a) เขียน spec ของ method calculateTax (2 คะแนน)
+Specification (Spec)
+Precondition:
+ผู้ใช้ต้องป้อนค่ารายได้ (income) เป็นจำนวนจริงที่ไม่ติดลบ
+Postcondition:
+โปรแกรมจะแสดงผลภาษีที่คำนวณได้จากอัตราภาษีตามช่วงรายได้
+Side Effects:
+รับค่าจาก standard input
+แสดงผลทางหน้าจอด้วย System.out.println
+
+
+(b) อธิบายวิธีการคำนวณภาษี (3 คะแนน)
+โปรแกรมรับค่ารายได้จากผู้ใช้ แล้วตรวจสอบช่วงรายได้ด้วยคำสั่ง if-else
+หากรายได้มากกว่า 20,000 → เสียภาษี 10%
+หากมากกว่า 15,000 → เสียภาษี 5%
+หากมากกว่า 10,000 → เสียภาษี 3%
+หากไม่เข้าเงื่อนไขใด → ไม่เสียภาษี
+จากนั้นแสดงค่าภาษีออกทางหน้าจอ
+
+(c) Review code: สิ่งที่ดีและปัญหา (5 คะแนน)
+สิ่งที่ดี
+ใช้โครงสร้าง if-else ชัดเจน
+อ่านค่า input ได้ถูกต้อง
+คำนวณภาษีตามเงื่อนไขได้จริง
+ปัญหา
+Method ทำหลายหน้าที่ (รับ input, คำนวณ, แสดงผล)
+ไม่มีการตรวจสอบ input ที่ไม่ถูกต้อง (เช่น ค่าติดลบ)
+ไม่คืนค่า (return) ทำให้ reuse ยาก
+ใช้ magic numbers (เช่น 20000, 10/100)
+
+(d) เขียน class TaxCalculator ใหม่ (5 คะแนน)
+public class TaxCalculator {
+
+    public double calculateTax(double income) {
+        if (income < 0) return 0;
+
+        if (income > 20000)
+            return income * 0.10;
+        else if (income > 15000)
+            return income * 0.05;
+        else if (income > 10000)
+            return income * 0.03;
+        else
+            return 0;
+    }
+}
+
+
+ข้อ 2: Polynomial Functions 35 คะแนน
+A
+public class LinearFunction {
+
+    protected double b;
+    protected double c;
+
+    // (a) Constructor
+    public LinearFunction(double b, double c) {
+        this.b = b;
+        this.c = c;
+    }
+
+    // (b) valueAt: f(x) = bx + c
+    public double valueAt(double x) {
+        return b * x + c;
+    }
+
+    // (c) slopeAt: ความชันคงที่
+    public double slopeAt(double x) {
+        return b;
+    }
+}
+
+public class QuadraticFunction extends LinearFunction {
+
+    private double a;
+
+    // (d) Constructor
+    public QuadraticFunction(double a, double b, double c) {
+        super(b, c);
+        this.a = a;
+    }
+
+    // (e) override valueAt
+    @Override
+    public double valueAt(double x) {
+        return a * x * x + super.valueAt(x);
+    }
+
+    // (f) override slopeAt
+    @Override
+    public double slopeAt(double x) {
+        return 2 * a * x + super.slopeAt(x);
+    }
+
+    // (p) derivative
+    public LinearFunction derivative() {
+        return new LinearFunction(2 * a, b);
+    }
+}
+B
+public class PolynomialFunction {
+
+    protected double a;
+    protected double b;
+    protected double c;
+
+    // (g) Constructor
+    public PolynomialFunction(double a, double b, double c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+
+    // (h) valueAt: f(x) = ax^2 + bx + c
+    public double valueAt(double x) {
+        return a * x * x + b * x + c;
+    }
+
+    // (i) slopeAt: f'(x) = 2ax + b
+    public double slopeAt(double x) {
+        return 2 * a * x + b;
+    }
+}
+
+public class LinearFunction extends PolynomialFunction {/// implement
+
+    // (j) Constructor
+    public LinearFunction(double b, double c) {
+        super(0, b, c);
+    }
+}
+
+🔹 Specification Questions
+(k) Specification ของ valueAt (1 คะแนน)
+method นี้ใช้คำนวณค่าของฟังก์ชันเมื่อแทนค่า x
+(l) Precondition ของ valueAt (1 คะแนน)
+ค่า x ต้องเป็นจำนวนจริงที่กำหนดค่าได้
+(m) Specification ของ slopeAt (1 คะแนน)
+method นี้ใช้คำนวณค่าความชันของฟังก์ชัน ณ จุด x
+(n) Precondition ของ slopeAt (1 คะแนน)
+ค่า x ต้องเป็นจำนวนจริงที่กำหนดค่าได้
+
+(o) เลือก implementation ที่ดีกว่า (3 คะแนน)
+เลือก Implementation A
+เหตุผล:
+ใช้ inheritance ได้เหมาะสม
+ลด code duplication
+สอดคล้องกับหลัก OOP และ polymorphism
+ขยายระบบในอนาคตได้ง่ายกว่า
+
+p) เขียน method derivative() (3 คะแนน)
+public LinearFunction derivative() {
+    return new LinearFunction(2 * a, b);
+}
+(q) เขียน slopeAt โดยใช้ derivative (3 คะแนน)
+public double slopeAt(double x) {
+    return derivative().valueAt(x);
+}
+(r) วิเคราะห์โค้ดการใช้งาน derivative (3 คะแนน)
+LinearFunction g = new LinearFunction(4, 7);
+
+g.derivative();
+คำตอบ
+โค้ดนี้เกิด compile-time error
+เนื่องจาก LinearFunction ไม่มี method derivative()
+แม้ object จะเป็น linear function จริง แต่ method ไม่ได้ถูกประกาศใน class
